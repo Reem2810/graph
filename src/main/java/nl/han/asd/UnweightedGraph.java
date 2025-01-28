@@ -70,6 +70,14 @@ public class UnweightedGraph {
         return vertex >= 0 && vertex < adjList.size();
     }
 
+    public boolean hasEdge(int src, int dest) {
+        if (!isValidVertex(src) || !isValidVertex(dest)) {
+            return false;
+        }
+        return adjList.get(src).contains(dest);
+    }
+
+
     // Print the graph
     public void printGraph() {
         for (int i = 0; i < adjList.size(); i++) {

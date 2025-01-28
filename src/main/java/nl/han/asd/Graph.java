@@ -1,7 +1,7 @@
 package nl.han.asd;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -38,10 +38,10 @@ public class Graph {
             System.out.println("Dataset loaded successfully!");
 
             // Testing Unweighted Graph using 'verbindingslijst'
-            testUnweightedGraph(dataset);
+            testUnweightedGraphAdjList(dataset);
 
             // Testing Unweighted Graph from adjacency matrix 'verbindingsmatrix'
-            testGraphFromAdjacencyMatrix(dataset);
+            testUnweightedGraphFromAdjacencyMatrix(dataset);
 
             // Testing Weighted Graph using 'verbindingslijst_gewogen'
             testWeightedGraph(dataset);
@@ -60,7 +60,7 @@ public class Graph {
     }
 
     // Test Unweighted Graph with adjacency list
-    private static void testUnweightedGraph(Map<String, Object> dataset) {
+    private static void testUnweightedGraphAdjList(Map<String, Object> dataset) {
         System.out.println("\n--- Testing Unweighted Graph (from 'verbindingslijst') ---");
         @SuppressWarnings("unchecked")
         List<List<Double>> verbindingslijstRaw = (List<List<Double>>) dataset.get("verbindingslijst");
@@ -98,46 +98,44 @@ public class Graph {
         unweightedGraph.printGraph();
     }
 
-    // Test Unweighted Graph created from adjacency matrix
-    private static void testGraphFromAdjacencyMatrix(Map<String, Object> dataset) {
-        System.out.println("\n--- Testing Graph from Adjacency Matrix ('verbindingsmatrix') ---");
+    private static void testUnweightedGraphFromAdjacencyMatrix (Map<String, Object> dataset) {
+        System.out.println("\n--- Testing Unweighted Graph (from 'verbindingsMatrix') ---");
         @SuppressWarnings("unchecked")
-        List<List<Double>> verbindingsmatrixRaw = (List<List<Double>>) dataset.get("verbindingsmatrix");
+        List<List<Double>> verbindingsmatrixRaw =
+                (List<List<Double>>) dataset.get("verbindingsmatrix");
 
-        // Convert adjacency matrix to adjacency list
-        List<List<Integer>> adjListFromMatrix = new ArrayList<>();
-        for (int i = 0; i < verbindingsmatrixRaw.size(); i++) {
-            List<Integer> neighbors = new ArrayList<>();
-            for (int j = 0; j < verbindingsmatrixRaw.get(i).size(); j++) {
-                if (verbindingsmatrixRaw.get(i).get(j) == 1.0) {
-                    neighbors.add(j);
-                }
-            }
-            adjListFromMatrix.add(neighbors);
+// Create our new matrix-based graph (using the second constructor):
+        UnweightedGraphMatrix matrixGraph = new UnweightedGraphMatrix(verbindingsmatrixRaw);
+
+        System.out.println("Initial Graph (Matrix Representation):");
+        matrixGraph.printGraph();
+
+// Demo calls:
+        System.out.println("\nAdding a vertex to Matrix Graph...");
+        matrixGraph.addVertex();
+        matrixGraph.printGraph();
+
+        System.out.println("\nAdding edge (0 -> 6) in Matrix Graph...");
+        matrixGraph.addEdge(0, 6);
+        matrixGraph.printGraph();
+
+        System.out.println("\nRemoving an edge (1 -> 2) in Matrix Graph...");
+        matrixGraph.removeEdge(1, 2);
+        matrixGraph.printGraph();
+
+// Currently removeVertex() is not implemented, so do:
+        System.out.println("\nTrying to remove vertex 4 in Matrix Graph...");
+        try {
+            matrixGraph.removeVertex(4);
+        } catch (UnsupportedOperationException e) {
+            System.out.println("removeVertex not implemented (demo).");
         }
+        matrixGraph.printGraph();
 
-        // Create UnweightedGraph from adjacency list
-        UnweightedGraph graphFromMatrix = new UnweightedGraph(adjListFromMatrix);
-        System.out.println("Initial Graph from Adjacency Matrix:");
-        graphFromMatrix.printGraph();
-
-        // Test operations
-        System.out.println("\nAdding a vertex to Graph from Adjacency Matrix...");
-        graphFromMatrix.addVertex();
-        graphFromMatrix.printGraph();
-
-        System.out.println("\nAdding edge (0 -> 6) in Graph from Adjacency Matrix...");
-        graphFromMatrix.addEdge(0, 6);
-        graphFromMatrix.printGraph();
-
-        System.out.println("\nRemoving an edge (1 -> 2) in Graph from Adjacency Matrix...");
-        graphFromMatrix.removeEdge(1, 2);
-        graphFromMatrix.printGraph();
-
-        System.out.println("\nRemoving vertex 4 in Graph from Adjacency Matrix...");
-        graphFromMatrix.removeVertex(4);
-        graphFromMatrix.printGraph();
     }
+
+
+    // Test Unweighted Graph created from adjacency matrix
 
     // Test Weighted Graph with adjacency list
     private static void testWeightedGraph(Map<String, Object> dataset) {
@@ -175,6 +173,8 @@ public class Graph {
         }
     }
 
+
+
     // Test Weighted Edge List
     private static void testWeightedEdgeList(Map<String, Object> dataset) {
         System.out.println("\n--- Testing Weighted Edge List ('lijnlijst_gewogen') ---");
@@ -193,10 +193,46 @@ public class Graph {
     private static void testWeightedAdjacencyMatrix(Map<String, Object> dataset) {
         System.out.println("\n--- Testing Weighted Adjacency Matrix ('verbindingsmatrix_gewogen') ---");
         @SuppressWarnings("unchecked")
-        List<List<Double>> verbindingsmatrixGewogenRaw = (List<List<Double>>) dataset.get("verbindingsmatrix_gewogen");
-        System.out.println("Weighted Adjacency Matrix:");
-        for (List<Double> row : verbindingsmatrixGewogenRaw) {
-            System.out.println(row);
+        List<List<Double>> verbindingsmatrixGewogenRaw =
+                (List<List<Double>>) dataset.get("verbindingsmatrix_gewogen");
+
+        // Build a WeightedGraphMatrix from the dataset
+        WeightedGraphMatrix wgMatrix = new WeightedGraphMatrix(verbindingsmatrixGewogenRaw);
+
+        System.out.println("Initial Weighted Adjacency Matrix:");
+        wgMatrix.printGraph();
+
+        // Test: add an edge (0 -> 2) with weight 50
+        System.out.println("\nAdding edge (0 -> 2) with weight 50...");
+        wgMatrix.addEdge(0, 2, 50);
+        wgMatrix.printGraph();
+
+        // Test: remove that edge
+        System.out.println("\nRemoving edge (0 -> 2)...");
+        wgMatrix.removeEdge(0, 2);
+        wgMatrix.printGraph();
+
+        // Test: check hasEdge
+        System.out.println("\nHas edge (1 -> 3)? " + wgMatrix.hasEdge(1, 3));
+        if (wgMatrix.hasEdge(1, 3)) {
+            System.out.println("Weight is: " + wgMatrix.getWeight(1, 3));
+        }
+
+        // Test: add a new vertex
+        System.out.println("\nAdding a vertex to WeightedGraphMatrix...");
+        wgMatrix.addVertex();
+        wgMatrix.printGraph();
+
+        // (Optional) try removing vertex 4 (if it exists)
+        if (wgMatrix.getVertexCount() > 4) {
+            System.out.println("\nRemoving vertex 4 from WeightedGraphMatrix...");
+            try {
+                wgMatrix.removeVertex(4);
+            } catch (UnsupportedOperationException e) {
+                System.out.println("removeVertex not implemented yet in WeightedGraphMatrix.");
+            }
+            wgMatrix.printGraph();
         }
     }
+
 }
