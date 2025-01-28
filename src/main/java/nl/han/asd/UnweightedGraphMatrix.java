@@ -13,10 +13,6 @@ public class UnweightedGraphMatrix {
         this.adjMatrix = new boolean[numVertices][numVertices];
     }
 
-    /**
-     * 2) Construct from a 2D List of Double (the JSON adjacency matrix data).
-     *    Expects 1.0 = edge, 0.0 = no edge.
-     */
     public UnweightedGraphMatrix(List<List<Double>> matrixData) {
         this.vertexCount = matrixData.size();
         this.adjMatrix = new boolean[vertexCount][vertexCount];
@@ -32,9 +28,6 @@ public class UnweightedGraphMatrix {
         }
     }
 
-    /**
-     * Adds a new vertex by growing the matrix by 1 row and 1 column.
-     */
     public void addVertex() {
         int newSize = vertexCount + 1;
         boolean[][] newMatrix = new boolean[newSize][newSize];
@@ -45,15 +38,11 @@ public class UnweightedGraphMatrix {
                 newMatrix[i][j] = adjMatrix[i][j];
             }
         }
-        // Replace old with new
+
         adjMatrix = newMatrix;
         vertexCount++;
     }
 
-    /**
-     * Removes the specified vertex (row & column) by rebuilding the matrix
-     * to exclude that vertex index.
-     */
     public void removeVertex(int vertex) {
         if (vertex < 0 || vertex >= vertexCount) {
             throw new IllegalArgumentException("Vertex " + vertex + " is out of range.");
@@ -63,11 +52,11 @@ public class UnweightedGraphMatrix {
 
         int newI = 0;
         for (int i = 0; i < vertexCount; i++) {
-            // Skip the row for 'vertex'
+
             if (i == vertex) continue;
             int newJ = 0;
             for (int j = 0; j < vertexCount; j++) {
-                // Skip the column for 'vertex'
+
                 if (j == vertex) continue;
 
                 newMatrix[newI][newJ] = adjMatrix[i][j];
@@ -75,7 +64,7 @@ public class UnweightedGraphMatrix {
             }
             newI++;
         }
-        // Replace old matrix
+
         adjMatrix = newMatrix;
         vertexCount = newSize;
     }
@@ -85,7 +74,6 @@ public class UnweightedGraphMatrix {
             System.out.println("Invalid vertex index for addEdge: " + src + " or " + dest);
             return;
         }
-        // Undirected edge
         adjMatrix[src][dest] = true;
         adjMatrix[dest][src] = true;
     }

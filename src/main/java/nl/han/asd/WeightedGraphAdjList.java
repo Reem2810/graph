@@ -22,13 +22,6 @@ public class WeightedGraphAdjList {
         }
     }
 
-    /**
-     * Constructor: builds a directed, weighted adjacency list from
-     * a 3-level JSON-like structure:
-     *  - outer list: one element per vertex
-     *  - middle list: the edges from that vertex
-     *  - inner list: [destination, weight]
-     */
     public WeightedGraphAdjList(List<List<List<Object>>> verbindingslijstGewogen) {
         adjList = new ArrayList<>();
         for (List<List<Object>> nodeEdges : verbindingslijstGewogen) {
@@ -49,10 +42,7 @@ public class WeightedGraphAdjList {
         }
     }
 
-    /**
-     * Adds a directed edge (src -> dest) with the given weight,
-     * if it doesn't already exist.
-     */
+
     public void addEdge(int src, int dest, int weight) {
         if (adjList == null || adjList.isEmpty()
                 || !isValidVertex(src) || !isValidVertex(dest)) {
@@ -60,19 +50,13 @@ public class WeightedGraphAdjList {
             return;
         }
 
-        // Check if edge (src -> dest) already exists
-        boolean edgeExists = adjList.get(src)
-                .stream()
-                .anyMatch(edge -> edge.destination == dest);
-        // If it doesn't exist, add it
+        boolean edgeExists = adjList.get(src).stream().anyMatch(edge -> edge.destination == dest);
+
         if (!edgeExists) {
             adjList.get(src).add(new Edge(dest, weight));
         }
     }
 
-    /**
-     * Removes the directed edge (src -> dest).
-     */
     public void removeEdge(int src, int dest) {
         if (adjList == null || adjList.isEmpty()
                 || !isValidVertex(src) || !isValidVertex(dest)) {
@@ -87,9 +71,7 @@ public class WeightedGraphAdjList {
         return vertex >= 0 && vertex < adjList.size();
     }
 
-    /**
-     * Prints each vertex's adjacency list (directed edges).
-     */
+
     public void printGraph() {
         if (adjList == null || adjList.isEmpty()) {
             System.out.println("The graph is empty.");
