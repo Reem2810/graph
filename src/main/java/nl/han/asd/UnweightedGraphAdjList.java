@@ -64,7 +64,7 @@ public class UnweightedGraph {
         adjList.get(dest).remove((Integer) src);
     }
 
-    // Utility: Check if vertex index is valid
+
     private boolean isValidVertex(int vertex) {
 
         return vertex >= 0 && vertex < adjList.size();
