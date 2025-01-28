@@ -7,9 +7,7 @@ public class UnweightedGraphMatrix {
     private boolean[][] adjMatrix;
     private int vertexCount;
 
-    /**
-     * 1) Construct an empty adjacency matrix of size numVertices x numVertices.
-     */
+
     public UnweightedGraphMatrix(int numVertices) {
         this.vertexCount = numVertices;
         this.adjMatrix = new boolean[numVertices][numVertices];
@@ -60,7 +58,6 @@ public class UnweightedGraphMatrix {
         if (vertex < 0 || vertex >= vertexCount) {
             throw new IllegalArgumentException("Vertex " + vertex + " is out of range.");
         }
-        // The new matrix will have one fewer row/column
         int newSize = vertexCount - 1;
         boolean[][] newMatrix = new boolean[newSize][newSize];
 
@@ -78,7 +75,6 @@ public class UnweightedGraphMatrix {
             }
             newI++;
         }
-
         // Replace old matrix
         adjMatrix = newMatrix;
         vertexCount = newSize;
@@ -113,9 +109,7 @@ public class UnweightedGraphMatrix {
         return vertex >= 0 && vertex < vertexCount;
     }
 
-    /**
-     * Print the graph in a manner similar to adjacency-list output.
-     */
+
     public void printGraph() {
         for (int i = 0; i < vertexCount; i++) {
             System.out.print("Vertex " + i + ": ");

@@ -3,19 +3,19 @@ package nl.han.asd;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UnweightedGraph {
+public class UnweightedGraphAdjList {
 
     private List<List<Integer>> adjList;
 
 
-    public UnweightedGraph(int numVertices) {
+    public UnweightedGraphAdjList(int numVertices) {
         adjList = new ArrayList<>();
         for (int i = 0; i < numVertices; i++) {
             adjList.add(new ArrayList<>());
         }
     }
 
-    public UnweightedGraph(List<List<Integer>> verbindingslijst) {
+    public UnweightedGraphAdjList(List<List<Integer>> verbindingslijst) {
         adjList = new ArrayList<>();
         for (List<Integer> list : verbindingslijst) {
             adjList.add(new ArrayList<>(list));

@@ -7,11 +7,10 @@ public class WeightedGraphMatrix {
     private double[][] matrix;    // holds weights; "no edge" marked by special value
     private int vertexCount;
     private final double NO_EDGE = Double.POSITIVE_INFINITY;
-    // or you could use -1.0 to indicate "no edge"
 
     /**
      * 1) Construct an empty weighted matrix of size numVertices x numVertices,
-     * initializing each cell to NO_EDGE (except diagonal = 0.0 if you like).
+     *    initializing each cell to NO_EDGE.
      */
     public WeightedGraphMatrix(int numVertices) {
         this.vertexCount = numVertices;
@@ -28,7 +27,6 @@ public class WeightedGraphMatrix {
      * 2) Construct from a 2D List of Double (the JSON adjacency matrix data).
      *    0.0 or some positive number is a valid edge weight,
      *    and we assume -1 or some sentinel indicates "no edge" (depends on how dataset is structured).
-     *    If your dataset uses 0 = no edge or -1 = no edge, adapt logic accordingly.
      */
     public WeightedGraphMatrix(List<List<Double>> matrixData) {
         this.vertexCount = matrixData.size();
@@ -37,9 +35,9 @@ public class WeightedGraphMatrix {
         for (int i = 0; i < vertexCount; i++) {
             for (int j = 0; j < vertexCount; j++) {
                 double value = matrixData.get(i).get(j);
-                // Example:
-                //   if value <= 0 => no edge
-                //   else => that is the weight
+                // Example logic:
+                // if value <= 0 => no edge
+                // else => that is the weight
                 if (value <= 0.0) {
                     matrix[i][j] = NO_EDGE;
                 } else {
@@ -50,27 +48,27 @@ public class WeightedGraphMatrix {
     }
 
     /**
-     * Adds an undirected edge with a given weight.
+     * Adds a directed edge (src -> dest) with a given weight.
      */
     public void addEdge(int src, int dest, double weight) {
         if (!isValidVertex(src) || !isValidVertex(dest)) {
             System.out.println("Invalid vertex index for addEdge: " + src + " or " + dest);
             return;
         }
+        // Directed: set only [src][dest]
         matrix[src][dest] = weight;
-        matrix[dest][src] = weight;  // undirected
     }
 
     /**
-     * Removes an edge by setting the weight to NO_EDGE.
+     * Removes a directed edge (src -> dest) by setting weight to NO_EDGE.
      */
     public void removeEdge(int src, int dest) {
         if (!isValidVertex(src) || !isValidVertex(dest)) {
             System.out.println("Invalid vertex index for removeEdge: " + src + " or " + dest);
             return;
         }
+        // Directed: set only [src][dest] to NO_EDGE
         matrix[src][dest] = NO_EDGE;
-        matrix[dest][src] = NO_EDGE;
     }
 
     /**
@@ -84,7 +82,7 @@ public class WeightedGraphMatrix {
     }
 
     /**
-     * Check if there's an actual edge (not NO_EDGE).
+     * Check if there's an actual directed edge (not NO_EDGE).
      */
     public boolean hasEdge(int src, int dest) {
         if (!isValidVertex(src) || !isValidVertex(dest)) {
@@ -94,8 +92,7 @@ public class WeightedGraphMatrix {
     }
 
     /**
-     * Just an example of adding a vertex (requires resizing the matrix).
-     * This is optional for your demonstration; often adjacency matrices are used for fixed V.
+     * Add a vertex by expanding the matrix to newSize x newSize.
      */
     public void addVertex() {
         int newSize = vertexCount + 1;
@@ -121,16 +118,33 @@ public class WeightedGraphMatrix {
     }
 
     /**
-     * Remove a vertex by rebuilding matrix.
-     * If you need it, implement similarly to the unweighted version.
+     * Remove a vertex by rebuilding the matrix without that row and column.
      */
     public void removeVertex(int vertex) {
-        throw new UnsupportedOperationException("removeVertex is not implemented in WeightedGraphMatrix demo.");
+        if (vertex < 0 || vertex >= vertexCount) {
+            throw new IllegalArgumentException("Invalid vertex index: " + vertex);
+        }
+        int newSize = vertexCount - 1;
+        double[][] newMatrix = new double[newSize][newSize];
+
+        int newI = 0;
+        for (int i = 0; i < vertexCount; i++) {
+            if (i == vertex) continue;  // skip row 'vertex'
+            int newJ = 0;
+            for (int j = 0; j < vertexCount; j++) {
+                if (j == vertex) continue;  // skip col 'vertex'
+                newMatrix[newI][newJ] = matrix[i][j];
+                newJ++;
+            }
+            newI++;
+        }
+
+        matrix = newMatrix;
+        vertexCount = newSize;
     }
 
     /**
-     * Print each row.
-     * If a cell is NO_EDGE, print something like "∞" (infinity).
+     * Print each row. If a cell is NO_EDGE, print "∞" (infinity).
      */
     public void printGraph() {
         for (int i = 0; i < vertexCount; i++) {
@@ -147,7 +161,7 @@ public class WeightedGraphMatrix {
     }
 
     /**
-     * Helper method to check valid vertex index.
+     * Helper to check valid vertex index.
      */
     private boolean isValidVertex(int v) {
         return (v >= 0 && v < vertexCount);

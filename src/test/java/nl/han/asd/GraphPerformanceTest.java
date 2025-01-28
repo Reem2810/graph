@@ -11,7 +11,7 @@ public class GraphPerformanceTest {
         int numVertices = 2000;
 
         // 1. Build an adjacency-list–based graph
-        UnweightedGraph listGraph = new UnweightedGraph(numVertices);
+        UnweightedGraphAdjList listGraph = new UnweightedGraphAdjList(numVertices);
 
         // 2. Build an adjacency-matrix–based graph
         UnweightedGraphMatrix matrixGraph = new UnweightedGraphMatrix(numVertices);

@@ -76,7 +76,7 @@ public class Graph {
         }
 
         // Initialize the UnweightedGraph
-        UnweightedGraph unweightedGraph = new UnweightedGraph(verbindingslijst);
+        UnweightedGraphAdjList unweightedGraph = new UnweightedGraphAdjList(verbindingslijst);
         System.out.println("Initial Unweighted Graph:");
         unweightedGraph.printGraph();
 
@@ -145,18 +145,18 @@ public class Graph {
                 (List<List<List<Object>>>) dataset.get("verbindingslijst_gewogen");
 
         if (verbindingslijstGewogen != null) {
-            WeightedGraph weightedGraph = new WeightedGraph(verbindingslijstGewogen);
+            WeightedGraphAdjList weightedGraphAdjList = new WeightedGraphAdjList(verbindingslijstGewogen);
             System.out.println("Initial Weighted Graph:");
-            weightedGraph.printGraph();
+            weightedGraphAdjList.printGraph();
 
             // Test adding and removing edges
             System.out.println("\nAdding edge (2 -> 4) with weight 60 in Weighted Graph...");
-            weightedGraph.addEdge(2, 4, 60);
-            weightedGraph.printGraph();
+            weightedGraphAdjList.addEdge(2, 4, 60);
+            weightedGraphAdjList.printGraph();
 
             System.out.println("\nRemoving edge (2 -> 4) in Weighted Graph...");
-            weightedGraph.removeEdge(2, 4);
-            weightedGraph.printGraph();
+            weightedGraphAdjList.removeEdge(2, 4);
+            weightedGraphAdjList.printGraph();
         }
     }
 
@@ -172,8 +172,6 @@ public class Graph {
             System.out.println("Edge: " + from + " -> " + to);
         }
     }
-
-
 
     // Test Weighted Edge List
     private static void testWeightedEdgeList(Map<String, Object> dataset) {
@@ -234,5 +232,4 @@ public class Graph {
             wgMatrix.printGraph();
         }
     }
-
 }
