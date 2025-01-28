@@ -4,7 +4,7 @@ import java.util.List;
 
 public class WeightedGraphMatrix {
 
-    private double[][] matrix;    // holds weights; "no edge" marked by special value
+    private double[][] matrix;
     private int vertexCount;
     private final double NO_EDGE = Double.POSITIVE_INFINITY;
 
@@ -12,7 +12,6 @@ public class WeightedGraphMatrix {
     public WeightedGraphMatrix(int numVertices) {
         this.vertexCount = numVertices;
         this.matrix = new double[numVertices][numVertices];
-        // Initialize to NO_EDGE
         for (int i = 0; i < numVertices; i++) {
             for (int j = 0; j < numVertices; j++) {
                 matrix[i][j] = NO_EDGE;
@@ -131,7 +130,7 @@ public class WeightedGraphMatrix {
         }
     }
 
-   
+
     private boolean isValidVertex(int v) {
         return (v >= 0 && v < vertexCount);
     }

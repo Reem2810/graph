@@ -77,7 +77,9 @@ public class UnweightedGraphAdjList {
         return adjList.get(src).contains(dest);
     }
 
-
+    public int getVertexCount() {
+        return adjList.size();
+    }
     // Print the graph
     public void printGraph() {
         for (int i = 0; i < adjList.size(); i++) {

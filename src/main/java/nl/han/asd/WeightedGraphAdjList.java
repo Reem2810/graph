@@ -22,6 +22,13 @@ public class WeightedGraphAdjList {
         }
     }
 
+    public WeightedGraphAdjList(int initialVertices) {
+        adjList = new ArrayList<>(initialVertices);
+        for (int i = 0; i < initialVertices; i++) {
+            adjList.add(new ArrayList<>());
+        }
+    }
+
     public WeightedGraphAdjList(List<List<List<Object>>> verbindingslijstGewogen) {
         adjList = new ArrayList<>();
         for (List<List<Object>> nodeEdges : verbindingslijstGewogen) {
@@ -42,28 +49,60 @@ public class WeightedGraphAdjList {
         }
     }
 
+    /**
+     * Add a new vertex by appending an empty edge list.
+     */
+    public void addVertex() {
+        if (adjList == null) {
+            adjList = new ArrayList<>();
+        }
+        adjList.add(new ArrayList<>());
+    }
+
+    /**
+     * Remove the specified vertex.
+     * 1) Remove its list (the row).
+     * 2) For all remaining vertices, remove edges pointing to 'vertex'
+     *    and adjust edges' destination if their index was above the removed vertex.
+     */
+    public void removeVertex(int vertex) {
+        if (!isValidVertex(vertex)) {
+            throw new IllegalArgumentException("Vertex " + vertex + " is out of range.");
+        }
+        // Remove the row
+        adjList.remove(vertex);
+
+        // For each remaining list, remove or adjust edges
+        for (int src = 0; src < adjList.size(); src++) {
+            // Remove edges that point to 'vertex'
+            adjList.get(src).removeIf(e -> e.destination == vertex);
+
+            // Decrement destination indices that are above 'vertex'
+            for (Edge e : adjList.get(src)) {
+                if (e.destination > vertex) {
+                    e.destination--;
+                }
+            }
+        }
+    }
 
     public void addEdge(int src, int dest, int weight) {
-        if (adjList == null || adjList.isEmpty()
-                || !isValidVertex(src) || !isValidVertex(dest)) {
+        if (!isValidVertex(src) || !isValidVertex(dest)) {
             System.out.println("Invalid operation or vertex index.");
             return;
         }
 
         boolean edgeExists = adjList.get(src).stream().anyMatch(edge -> edge.destination == dest);
-
         if (!edgeExists) {
             adjList.get(src).add(new Edge(dest, weight));
         }
     }
 
     public void removeEdge(int src, int dest) {
-        if (adjList == null || adjList.isEmpty()
-                || !isValidVertex(src) || !isValidVertex(dest)) {
+        if (!isValidVertex(src) || !isValidVertex(dest)) {
             System.out.println("Invalid operation or vertex index.");
             return;
         }
-
         adjList.get(src).removeIf(edge -> edge.destination == dest);
     }
 
@@ -71,6 +110,9 @@ public class WeightedGraphAdjList {
         return vertex >= 0 && vertex < adjList.size();
     }
 
+    public int getVertexCount() {
+        return (adjList == null) ? 0 : adjList.size();
+    }
 
     public void printGraph() {
         if (adjList == null || adjList.isEmpty()) {
