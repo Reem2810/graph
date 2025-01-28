@@ -23,13 +23,13 @@ public class UnweightedGraph {
     }
 
     public void addVertex() {
+
         adjList.add(new ArrayList<>());
     }
 
     public void removeVertex(int vertex) {
         if (vertex < 0 || vertex >= adjList.size()) {
-            System.out.println("Vertex " + vertex + " does not exist.");
-            return;
+            throw new IllegalArgumentException("Vertex " + vertex + " does not exist.");
         }
         adjList.remove(vertex);
         for (List<Integer> list : adjList) {
@@ -58,8 +58,7 @@ public class UnweightedGraph {
 
     public void removeEdge(int src, int dest) {
         if (!isValidVertex(src) || !isValidVertex(dest)) {
-            System.out.println("Invalid vertex index.");
-            return;
+            throw new IllegalArgumentException("Invalid vertex index.");
         }
         adjList.get(src).remove((Integer) dest);
         adjList.get(dest).remove((Integer) src);
@@ -67,6 +66,7 @@ public class UnweightedGraph {
 
     // Utility: Check if vertex index is valid
     private boolean isValidVertex(int vertex) {
+
         return vertex >= 0 && vertex < adjList.size();
     }
 
